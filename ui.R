@@ -23,6 +23,7 @@ shinyUI(fluidPage(
         )
       )
     ),
+    
     tabPanel("Suicide with gdp",
              sidebarLayout(
                sidebarPanel(
@@ -34,6 +35,12 @@ shinyUI(fluidPage(
                  textOutput("text_for_gdp")
                )
              )
-             )
+          ),
+    
+    tabPanel("Summary", 
+             selectInput("year", "Year ", choice = sort(unique(data$year))),
+             plotOutput("world"), width = 50, height = 100)
   )
+  
+  
 ))

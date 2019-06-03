@@ -31,3 +31,6 @@ suicide_with_gdp <- function() {
 
 
 
+
+
+
