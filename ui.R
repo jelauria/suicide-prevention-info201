@@ -11,20 +11,29 @@ colnames(data)[11] <- "gdp_per_capita"
 
 shinyUI(fluidPage(
   
-
-  titlePanel("Old Faithful Geyser Data"),
-  
-
-  sidebarLayout(
-    sidebarPanel(
-      selectInput("country", "Country", choices = unique(as.character(data$country)))
-       
+  navbarPage("Final Project",
+    tabPanel("Suicide in year",
+      sidebarLayout(
+        sidebarPanel(
+          selectInput("country", "Country:", choices = unique(as.character(data$country)))
+        ),
+       mainPanel(
+         plotOutput("suicide_year_Plot"),
+         textOutput("text_for_first_graph")
+        )
+      )
     ),
-    
-
-    mainPanel(
-      plotOutput("distPlot")
-       
-    )
+    tabPanel("Suicide with gdp",
+             sidebarLayout(
+               sidebarPanel(
+                 sliderInput("gdp", "Please choose a gdp range", 
+                             min = 251, max = 126352, value = c(251,300))
+               ),
+               mainPanel(
+                 plotOutput("suicide_with_gdp"),
+                 textOutput("text_for_gdp")
+               )
+             )
+             )
   )
 ))
