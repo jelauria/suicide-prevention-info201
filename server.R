@@ -1,53 +1,107 @@
-library(shiny)
+#import all neccessary libraries and source files
 library(dplyr)
+library(RColorBrewer)
 library(ggplot2)
-library(mapproj)
-source("graph_1.R")
+library(rworldmap)
+library(stringr)
+library(countrycode)
+source("map_array_manager.R") #reads in file that generate arrays for map tab
+source("line_array_manager.R") #reads in file that generate arrays for linear plot tab
 
-data <- read.csv("master.csv", sep = ",", stringsAsFactors = FALSE)
-colnames(data)[10] <- "gdp_for_year"
-colnames(data)[11] <- "gdp_per_capita"
+#read in suicide data
+raw_suicide_data <- read.csv("master.csv", sep = ",", stringsAsFactors = FALSE)
 
-# Define server logic required to draw a histogram
-shinyServer(function(input, output) {
-   
-  output$suicide_year_Plot <- renderPlot({
-    return(suicide_in_year(input$country))
+#sets up dynamic subcatergoy choices
+sex_choices <- unique(as.character(raw_suicide_data$sex))
+age_choices <- unique(as.character(raw_suicide_data$age))
+generation_choices <- unique(as.character(raw_suicide_data$generation))
+
+# define server for Shiny app
+shinyServer(function(input, output, session) {
+  
+  #generates the dynamic subcategory box for the linear tab based off of category input
+  output$subcategory_box = renderUI(
+    if (is.null(input$lin_category) || input$lin_category == "pick one"){return()
+      }else if (input$lin_category == "sex"){ selectInput("subcategory", "Select a Subcategory:", choices = sex_choices)
+        }else if (input$lin_category == "age"){ selectInput("subcategory", "Select a Subcategory:", choices = age_choices)
+        }else{
+          selectInput("subcategory", "Select a Subcategory:", choices = generation_choices)
+          })
+  
+  #generates array needed for linear plot
+  get_linear_data <- reactive({
+    df <- generate_line_array(input$lin_category, input$subcategory, input$year[1], input$year[2])
+    return(df)
   })
   
-  output$text_for_first_graph <- renderText({
-    paste("This graph shows the relation between suicide number and year in ", input$country)
+  #fill in main panel for linear plot tab
+  output$linear_category_plot <- renderPlot({
+    
+    data_plot <- get_linear_data() #preps data to be rendered into linearplot
+  
+    #plot line graph
+    plot(data_plot,type = "o", col = "purple", xlab = "Year", ylab = "Number of Suicides",
+         main = paste("Number of", str_to_title(input$subcategory), 
+                      "Suicides Committed Globally from", input$year[1], "to", input$year[2]))
   })
   
-  output$suicide_with_gdp <- renderPlot({
-    sort_data <- data %>%
-      group_by(gdp_per_capita)
-    table <- summarise(sort_data, total_suicide_number = sum(suicides_no))
-    graph <- ggplot(table, aes(x = gdp_per_capita, y = total_suicide_number)) +
-      geom_point(stat = "identity", color = "blue") + 
-      xlim(input$gdp)
-    return(graph)
+  #generates responsive title as text feedback   
+  output$linear_plot_subtitle <- renderText({
+    n_entries <- get_linear_data()%>%
+      summarise(total = sum(count))
+    title <- paste("UFO Sightings by", input$lin_category, "From", 
+                   n_entries$total, "Observations.")
+    return(title)
   })
   
-  output$text_for_gdp <- renderText({
-    paste("The gdp range you choose is from", input$gdp[1], "to", input$gdp[2])
+  #generates array needed by map 
+  generate_map_data <- reactive({
+    df <- generate_map_array(input$year[1], input$year[2], input$map_category)
+    return(as.data.frame(df, stringsAsFactors = FALSE))
   })
   
-  output$world <- renderPlot({
-    target_data <- data %>%
-      filter(year == input$year) %>%
-      group_by(country)
-    table <- summarise(target_data, suicide_ration = sum(suicides_no) * 100 / sum(population))
-    table$country[table$country == "Republic of Korea"] <- "South Korea"
-    table$country[table$country == "United States"] <- "USA"
-    table$country[table$country == "Russian Federation"] <- "Russia"
-    world_data <- map_data("world")
-    map <- ggplot(world_data) +
-      geom_map(aes(map_id = region, group = group, x = long, y = lat), map = world_data, fill = "white", 
-               colour = "#7f7f7f") +
-      geom_map(data = table, map = world_data, aes(fill = suicide_ration, map_id = country)) +
-      scale_fill_gradient(high = "red", low = "blue")
-      return(map)
+  #plot map reactively
+  get_map_col <- reactive({
+  
+    #get column to plot
+    col_2plot <- input$map_category
+    return(col_2plot)
   })
   
+    get_map_title <- reactive({
+    
+    #generate map title and constantly update
+    map_title <- paste("Most Popular", str_to_title(input$map_category), 
+                      "to Commit Suicide (by Country) From", input$year[1], "to", input$year[2])
+    return(map_title)
+    })
+
+    #fill in main panel created for a plot
+    output$category_comp_map <- renderPlot({
+      
+      #render the map
+      par(mai=c(0,0,0.2,0),xaxs="i",yaxs="i")
+      
+      #joining the data to a map
+      sPDF <- joinCountryData2Map(generate_map_data(), joinCode = "NAME", nameJoinColumn = "country")
+
+      #mapping
+      mapCountryData(sPDF,
+                    nameColumnToPlot= get_map_col(),
+                    catMethod="categorical",
+                    mapTitle= get_map_title(),
+                    colourPalette= op <- palette(c('#d73027','#fc8d59','#fee090','#e0f3f8','#91bfdb','#4575b4')),
+                    oceanCol="lightgrey",
+                    missingCountryCol="white")
+    }) #closes map plot output
+  
+    #generates responsive subtitle as text feedback   
+    output$category_map_subtitle <- renderText({
+    n_entries <- get_map_data()%>%
+      summarise(total = sum(count))
+    title <- paste("Comparison of the number of suicides by", input$map_category, "from", 
+                   n_entries$total, "observations recorded during the period of", 
+                   input$year[1], "to", input$year[2], ".")
+    return(title)
+    })
 })
