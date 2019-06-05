@@ -47,9 +47,10 @@ shinyServer(function(input, output, session) {
   #generates responsive title as text feedback   
   output$linear_plot_subtitle <- renderText({
     n_entries <- get_linear_data()%>%
-      summarise(total = sum(count))
-    title <- paste("UFO Sightings by", input$lin_category, "From", 
-                   n_entries$total, "Observations.")
+      summarise(total = sum(num_suicides))
+    title <- paste("Change in", input$subcategory, "suicides generated from", 
+                   n_entries$total, "observations recorded during the period of", 
+                   input$lin_year[1], "to", input$lin_year[2], ".")
     return(title)
   })
   

@@ -22,7 +22,7 @@ generate_line_array <- function(user_category, user_subcat, year_min, year_max){
   
   #stitch together final array for linear plot
   final_plotting_array <- group_by(plotting_array, year)%>%
-    summarise(sum(suicides_no))
+    summarise(num_suicides = sum(suicides_no))
   
   return(final_plotting_array)
 }
