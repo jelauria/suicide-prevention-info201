@@ -17,14 +17,14 @@ shinyUI(fluidPage(
                       #titlePanel("Global Comparisons of Suicides by Sex, Age or Generation"),
                       sidebarLayout(
                         sidebarPanel(
-                          sliderInput("year", "Select Time Period:", #set up slider to select time period
+                          sliderInput("lin_year", "Select Time Period:", #set up slider to select time period
                                       min = 1985, max = 2016, value = c(1985, 2016)),
                           selectInput("lin_category", "Category:", choices = categories), #static SI widget
                           uiOutput("subcategory_box")), #preps subcategory box that is dependant on category box
                                                                                     #vector defined above (categories)
                         mainPanel(
                           plotOutput("linear_category_plot"), #plots main panel 
-                          textOutput("linear_category_subtitle")) #subtitle
+                          textOutput("linear_plot_subtitle")) #subtitle
                         ) #close side pannel
                       ), #close main panel
              
@@ -33,15 +33,29 @@ shinyUI(fluidPage(
                       #titlePanel("Global Change in Number of Suicides (by Subcategory) Over Time"),
                       sidebarLayout(
                         sidebarPanel(
-                          sliderInput("year", "Select Time Period:", #set up slider to select time period
+                          sliderInput("map_year", "Select Time Period:", #set up slider to select time period
                                       min = 1985, max = 2016, value = c(1985, 2016)),
                           selectInput("map_category", "Category:", choices = categories)), #Static SI widget
                             mainPanel(
                               plotOutput("category_comp_map"), #draws main panel plots
-                              textOutput("text_for_first_graph") #subtitle
+                              textOutput("category_map_subtitle") #subtitle
                             ) #close main panel
                       ) #close side panel
-                      )#close tab panel
+                      ),#close tab panel
+             
+             #builds GDP tab
+             tabPanel("GDP Scatter",
+                      sidebarLayout(
+                        sidebarPanel(
+                          sliderInput("gdp", "Select GDP Range:", #sets up slider to select GDP range
+                                      min = 251, max = 126352, value = c(251, 126352))
+                        ),
+                        mainPanel(
+                          plotOutput("suicide_with_gdp"),
+                          textOutput("text_for_gdp")
+                        )#close main panel
+                      )#close sidebar layout
+             )#close tabPanel
              ) #close navbar page
   ) #close fluid page
 ) #close shinyUI

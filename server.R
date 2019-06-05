@@ -1,12 +1,11 @@
 #import all neccessary libraries and source files
 library(dplyr)
-library(RColorBrewer)
-library(ggplot2)
 library(rworldmap)
 library(stringr)
-library(countrycode)
+library(ggplot2)
 source("map_array_manager.R") #reads in file that generate arrays for map tab
 source("line_array_manager.R") #reads in file that generate arrays for linear plot tab
+source("graph_1.R") #reads in file that generate plots for gdp tab
 
 #read in suicide data
 raw_suicide_data <- read.csv("master.csv", sep = ",", stringsAsFactors = FALSE)
@@ -30,7 +29,7 @@ shinyServer(function(input, output, session) {
   
   #generates array needed for linear plot
   get_linear_data <- reactive({
-    df <- generate_line_array(input$lin_category, input$subcategory, input$year[1], input$year[2])
+    df <- generate_line_array(input$lin_category, input$subcategory, input$lin_year[1], input$lin_year[2])
     return(df)
   })
   
@@ -42,7 +41,7 @@ shinyServer(function(input, output, session) {
     #plot line graph
     plot(data_plot,type = "o", col = "purple", xlab = "Year", ylab = "Number of Suicides",
          main = paste("Number of", str_to_title(input$subcategory), 
-                      "Suicides Committed Globally from", input$year[1], "to", input$year[2]))
+                      "Suicides Committed Globally from", input$lin_year[1], "to", input$lin_year[2]))
   })
   
   #generates responsive title as text feedback   
@@ -56,7 +55,7 @@ shinyServer(function(input, output, session) {
   
   #generates array needed by map 
   generate_map_data <- reactive({
-    df <- generate_map_array(input$year[1], input$year[2], input$map_category)
+    df <- generate_map_array(input$map_year[1], input$map_year[2], input$map_category)
     return(as.data.frame(df, stringsAsFactors = FALSE))
   })
   
@@ -72,7 +71,7 @@ shinyServer(function(input, output, session) {
     
     #generate map title and constantly update
     map_title <- paste("Most Popular", str_to_title(input$map_category), 
-                      "to Commit Suicide (by Country) From", input$year[1], "to", input$year[2])
+                      "to Commit Suicide (by Country) From", input$map_year[1], "to", input$map_year[2])
     return(map_title)
     })
     
@@ -107,11 +106,31 @@ shinyServer(function(input, output, session) {
   
     #generates responsive subtitle as text feedback   
     output$category_map_subtitle <- renderText({
-    n_entries <- get_map_data()%>%
-      summarise(total = sum(count))
+    n_entries <- generate_map_data()%>%
+      summarise(total = sum(num_suicides))
     title <- paste("Comparison of the number of suicides by", input$map_category, "from", 
                    n_entries$total, "observations recorded during the period of", 
-                   input$year[1], "to", input$year[2], ".")
+                   input$map_year[1], "to", input$map_year[2], ".")
     return(title)
+    })
+    
+    #generates GDP tab outputs
+    output$suicide_with_gdp <- renderPlot({
+      sort_data <- data %>%
+        group_by(gdp_per_capita)
+      table <- summarise(sort_data, total_suicide_number = sum(suicides_no))
+      graph <- ggplot(table, aes(x = gdp_per_capita, y = total_suicide_number)) +
+        geom_point(stat = "identity", color = "blue") + 
+        xlim(input$gdp) +
+        labs(
+          title = "Number of Suicides versus GDP per capita, 1985 - 2016",
+          x = "GDP per capita (USD($))",
+          y = "Number of Suicides"
+        )
+      return(graph)
+    })
+    
+    output$text_for_gdp <- renderText({
+      paste("GDP per capita range: $", input$gdp[1], "to $", input$gdp[2])
     })
 })
