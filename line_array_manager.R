@@ -20,6 +20,7 @@ generate_line_array <- function(user_category, user_subcat, year_min, year_max){
   }else if(user_category == "age"){plotting_array <- filter(working_data, working_data$age == user_subcat)
   }else{plotting_array <- filter(working_data, working_data$generation == user_subcat)}
   
+  #stitch together final array for linear plot
   final_plotting_array <- group_by(plotting_array, year)%>%
     summarise(sum(suicides_no))
   

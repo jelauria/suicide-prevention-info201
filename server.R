@@ -60,7 +60,7 @@ shinyServer(function(input, output, session) {
     return(as.data.frame(df, stringsAsFactors = FALSE))
   })
   
-  #plot map reactively
+  #get coloumn to plot reactively
   get_map_col <- reactive({
   
     #get column to plot
@@ -74,6 +74,16 @@ shinyServer(function(input, output, session) {
     map_title <- paste("Most Popular", str_to_title(input$map_category), 
                       "to Commit Suicide (by Country) From", input$year[1], "to", input$year[2])
     return(map_title)
+    })
+    
+    #updates color palette in response to input
+    get_map_pallette <- reactive({
+      
+      if(input$map_category == "sex"){op <- palette(c('#e78ac3','#8da0cb'))
+      }else{op <- palette(c('#e78ac3','#66c2a5','#fc8d62','#a6d854','#ffd92f','#8da0cb'))
+      }
+      
+      return(op)
     })
 
     #fill in main panel created for a plot
@@ -90,7 +100,7 @@ shinyServer(function(input, output, session) {
                     nameColumnToPlot= get_map_col(),
                     catMethod="categorical",
                     mapTitle= get_map_title(),
-                    colourPalette= op <- palette(c('#d73027','#fc8d59','#fee090','#e0f3f8','#91bfdb','#4575b4')),
+                    colourPalette= get_map_pallette(),
                     oceanCol="lightgrey",
                     missingCountryCol="white")
     }) #closes map plot output
