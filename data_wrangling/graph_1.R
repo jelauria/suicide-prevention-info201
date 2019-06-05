@@ -1,7 +1,7 @@
 library(ggplot2)
 library(dplyr)
 library(mapproj)
-data <- read.csv("master.csv", sep = ",", stringsAsFactors = FALSE)
+data <- read.csv("data/master.csv", sep = ",", stringsAsFactors = FALSE)
 colnames(data)[10] <- "gdp_for_year"
 colnames(data)[11] <- "gdp_per_capita"
 

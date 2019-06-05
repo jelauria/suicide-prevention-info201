@@ -2,7 +2,7 @@
 library(dplyr)
 
 #read in suicide data
-raw_suicide_data <- read.csv("master.csv", sep = ",", stringsAsFactors = FALSE)
+raw_suicide_data <- read.csv("data/master.csv", sep = ",", stringsAsFactors = FALSE)
 
 #reaname country column to a workable title
 coll_names <- colnames(raw_suicide_data)

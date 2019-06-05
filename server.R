@@ -3,11 +3,12 @@ library(dplyr)
 library(rworldmap)
 library(stringr)
 library(ggplot2)
-source("map_array_manager.R") #reads in file that generate arrays for map tab
-source("line_array_manager.R") #reads in file that generate arrays for linear plot tab
+source("data_wrangling/map_array_manager.R") #reads in file that generate arrays for map tab
+source("data_wrangling/line_array_manager.R") #reads in file that generate arrays for linear plot tab
+source("data_wrangling/graph_1.R") #reads in file that generate arrays for gdp tab
 
 #read in suicide data
-raw_suicide_data <- read.csv("master.csv", sep = ",", stringsAsFactors = FALSE)
+raw_suicide_data <- read.csv("data/master.csv", sep = ",", stringsAsFactors = FALSE)
 
 #sets up dynamic subcatergoy choices
 sex_choices <- unique(as.character(raw_suicide_data$sex))

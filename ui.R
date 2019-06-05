@@ -56,12 +56,12 @@ shinyUI(fluidPage(
              
              #builds getting help page
              tabPanel("Don't Give Up",
-                      includeMarkdown("gettingHelp.Rmd")
+                      includeMarkdown("info_pages/gettingHelp.Rmd")
              ),#closes tabpanel
              
              #builds about page
              tabPanel("About",
-                      includeMarkdown("about.Rmd")
+                      includeMarkdown("info_pages/about.Rmd")
              )#closes tabpanel
              
              ) #close navbar page
