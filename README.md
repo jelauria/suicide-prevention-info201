@@ -40,9 +40,10 @@ One of the biggest challenges we face is the fact that this dataset does not inc
 
 ## R Packages Used:
 -	dplyr
--	mapprojrworldmap
--	ggmapstringr
+-   rworldmap
+-	stringr
 -	ggplot2
+-   mapproj
 
 ### Github Repository: 
 https://github.com/jelauria/suicide-prevention-info201
