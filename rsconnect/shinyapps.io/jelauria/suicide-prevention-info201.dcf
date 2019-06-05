@@ -5,8 +5,8 @@ account: jelauria
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 966612
-bundleId: 2132218
+bundleId: 2133558
 url: https://jelauria.shinyapps.io/suicide-prevention-info201/
-when: 1559733649.49764
+when: 1559761463.05828
 asMultiple: FALSE
 asStatic: FALSE
