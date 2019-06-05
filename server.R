@@ -5,7 +5,6 @@ library(stringr)
 library(ggplot2)
 source("map_array_manager.R") #reads in file that generate arrays for map tab
 source("line_array_manager.R") #reads in file that generate arrays for linear plot tab
-source("graph_1.R") #reads in file that generate plots for gdp tab
 
 #read in suicide data
 raw_suicide_data <- read.csv("master.csv", sep = ",", stringsAsFactors = FALSE)

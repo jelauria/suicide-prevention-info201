@@ -1,9 +1,6 @@
 #import shiny
 library(shiny)
 
-#load in raw suicide data
-raw_suicide_data <- read.csv("master.csv", sep = ",", stringsAsFactors = FALSE)
-
 #define select input choices for map 
 categories <- c("pick one", "sex", "age", "generation")
 
@@ -24,9 +21,9 @@ shinyUI(fluidPage(
                                                                                     #vector defined above (categories)
                         mainPanel(
                           plotOutput("linear_category_plot"), #plots main panel 
-                          textOutput("linear_plot_subtitle")) #subtitle
-                        ) #close side pannel
-                      ), #close main panel
+                          textOutput("linear_plot_subtitle")) #subtitle and close main panel
+                        ) #close side layout
+                      ), #close tab panel
              
              #builds linear plot tab
              tabPanel("Map by Category",
@@ -55,7 +52,18 @@ shinyUI(fluidPage(
                           textOutput("text_for_gdp")
                         )#close main panel
                       )#close sidebar layout
-             )#close tabPanel
+             ),#close tabPanel
+             
+             #builds getting help page
+             tabPanel("Don't Give Up",
+                      includeMarkdown("gettingHelp.Rmd")
+             ),#closes tabpanel
+             
+             #builds about page
+             tabPanel("About",
+                      includeMarkdown("about.Rmd")
+             )#closes tabpanel
+             
              ) #close navbar page
   ) #close fluid page
 ) #close shinyUI
