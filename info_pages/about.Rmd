@@ -31,7 +31,7 @@ Low GDP per capita countries appeared to be at much higher risk of suicide than 
 
 This dataset was read in as a static .csv file. Each entry has information on the country, year, sex, age group, count of suicides, population, suicide rate, country-year composite key, HDI for that year, GDP for that year, GDP per capita, and generation (based on age grouping average) for each unique case.
 
-Data wrangling was done in `map_array_manager.R` and `line_array_manager.R`, along with a minor amount in `server.R`.
+Data wrangling was done in `map_array_manager.R`, `line_array_manager.R` and `graph_1.R`, along with a minor amount in `server.R`.
 
 ## Notes
 
