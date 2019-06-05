@@ -2,6 +2,7 @@ library(ggplot2)
 library(dplyr)
 library(mapproj)
 data <- read.csv("master.csv", sep = ",", stringsAsFactors = FALSE)
+##rename some column to eliminate messy code
 colnames(data)[10] <- "gdp_for_year"
 colnames(data)[11] <- "gdp_per_capita"
 
@@ -18,6 +19,8 @@ suicide_in_year <- function(country_name) {
   return(graph)
 }
 
+
+##check if there is any relation between suicide number and gdp per capita
 suicide_with_gdp <- function() {
   sort_data <- data %>%
     group_by(gdp_per_capita)
