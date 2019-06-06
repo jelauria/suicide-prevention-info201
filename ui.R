@@ -45,7 +45,8 @@ shinyUI(fluidPage(
                       sidebarLayout(
                         sidebarPanel(
                           sliderInput("gdp", "Select GDP Range:", #sets up slider to select GDP range
-                                      min = 251, max = 126352, value = c(251, 126352))
+                                      min = 251, max = 126352, value = c(251, 126352)),
+                          textOutput("text_to_analysis_gdp")
                         ),
                         mainPanel(
                           plotOutput("suicide_with_gdp"),

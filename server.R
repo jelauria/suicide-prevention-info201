@@ -134,4 +134,10 @@ shinyServer(function(input, output, session) {
     output$text_for_gdp <- renderText({
       paste("GDP per capita range: $", input$gdp[1], "to $", input$gdp[2])
     })
+    
+    output$text_to_analysis_gdp <- renderText({
+      paste("As we can see from that graph, suicide always occurs through out the whole GDP axis.
+            However, high suicide number occurs when the GDP become lower. And as the GDP increases, the 
+            total suicide number decreases.")
+    })
 })
