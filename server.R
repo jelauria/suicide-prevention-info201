@@ -20,7 +20,7 @@ shinyServer(function(input, output, session) {
   
   #generates the dynamic subcategory box for the linear tab based off of category input
   output$subcategory_box = renderUI(
-    if (is.null(input$lin_category) || input$lin_category == "pick one"){return()
+    if (is.null(input$lin_category)){return()
       }else if (input$lin_category == "sex"){ selectInput("subcategory", "Select a Subcategory:", choices = sex_choices)
         }else if (input$lin_category == "age"){ selectInput("subcategory", "Select a Subcategory:", choices = age_choices)
         }else{
@@ -51,6 +51,26 @@ shinyServer(function(input, output, session) {
     title <- paste("Change in", input$subcategory, "suicides generated from", 
                    n_entries$total, "observations recorded during the period of", 
                    input$lin_year[1], "to", input$lin_year[2], ".")
+    return(title)
+  })
+  
+  #Include paragraph explanation of linear data plot
+  output$linear_plot_explanation <- renderText({
+    
+    title <- "To determine whether any populations observed and increase in recent years, 
+    we generated linear plots of the number of suicides committed by people sharing one 
+    specific characteristic (age group, sex, or generation) against time. There appeared 
+    to be no significant increases in male or female suicides within the past 20 years; 
+    both have remained relatively stable since the increase observed in 1990. A similar 
+    pattern was observed across different age ranges; most have remained relatively stable, 
+    with the exception of people aged 5-14 years old observing a slight decrease in suicide 
+    rate that was observed in 2003 and has since remained stable.Interesting patterns were 
+    observed when focusing on suicide rates by generation. Older generations like the GI Generation, 
+    Silent Generation, and Baby Boomers have observed significant decreases in recent years, 
+    while Millenials and Generation X are on the rise. Perhaps this may be representative of 
+    the shift in generations in wokring class; the older generations are retiring/passing due 
+    to health conditions while Millenials and GenX are entering the workforce."
+    
     return(title)
   })
   
@@ -113,6 +133,21 @@ shinyServer(function(input, output, session) {
                    n_entries$total, "observations recorded during the period of", 
                    input$map_year[1], "to", input$map_year[2], ".")
     return(title)
+    })
+    
+    #Include paragraph explanation of linear data plot
+    output$category_map_explanation <- renderText({
+      
+      title <- "To determine the dominant characteristics of suicidal individuals by country, 
+      we generated maps color-coded to show the subgroup that committed the most suicides in 
+      each country. Regardless of time period, the majority of suicides across the globe appeared 
+      to be committed by males. The most popular age to commit suicide across the globe was 35-54 
+      years of age, followed by a tie between individuals aged 15-24 and 25-34. With regard to 
+      generations, Baby Boomers appear to have commited the most suicides from 1985 to 2016, 
+      however, Millenials and Genration X individuals have taken the lead in recent years 
+      (approx. 2010 to 2016)."
+      
+      return(title)
     })
     
     #generates GDP tab outputs

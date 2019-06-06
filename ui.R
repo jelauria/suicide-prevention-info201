@@ -2,7 +2,7 @@
 library(shiny)
 
 #define select input choices for map 
-categories <- c("pick one", "sex", "age", "generation")
+categories <- c("sex", "age", "generation")
 
 #use fluid Bootstrap layout
 shinyUI(fluidPage(
@@ -21,7 +21,9 @@ shinyUI(fluidPage(
                                                                                     #vector defined above (categories)
                         mainPanel(
                           plotOutput("linear_category_plot"), #plots main panel 
-                          textOutput("linear_plot_subtitle")) #subtitle and close main panel
+                          textOutput("linear_plot_subtitle"),
+                          br(),
+                          textOutput("linear_plot_explanation")) #subtitle and close main panel
                         ) #close side layout
                       ), #close tab panel
              
@@ -35,7 +37,9 @@ shinyUI(fluidPage(
                           selectInput("map_category", "Category:", choices = categories)), #Static SI widget
                             mainPanel(
                               plotOutput("category_comp_map"), #draws main panel plots
-                              textOutput("category_map_subtitle") #subtitle
+                              textOutput("category_map_subtitle"),
+                              br(),
+                              textOutput("category_map_explanation")#subtitle
                             ) #close main panel
                       ) #close side panel
                       ),#close tab panel
